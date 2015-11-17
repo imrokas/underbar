@@ -7,6 +7,7 @@
   // seem very useful, but remember it--if a function needs to provide an
   // iterator when the user does not pass one in, this will be handy.
   _.identity = function(val) {
+    return val;
   };
 
   /**
@@ -37,6 +38,12 @@
   // Like first, but for the last elements. If n is undefined, return just the
   // last element.
   _.last = function(array, n) {
+    var index = array.length - n;
+    if (index >= 0) {
+      return n === undefined ? array[array.length - 1] : array.slice(array.length - n);
+    } else {
+      return n === undefined ? array[array.length - 1] : array.slice(0);
+    }
   };
 
   // Call iterator(value, key, collection) for each element of collection.
@@ -45,6 +52,19 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+    var i;
+    var key;
+    if (Array.isArray(collection)) {
+      //iterate over the array
+      for (i = 0; i < collection.length; i++ ) {
+        collection[i] = iterator(collection[i], i, collection);
+      }
+    } else if (typeof collection === 'object') {
+      //iterate over the values of the object
+      for (key in collection) {
+        collection[key] = iterator(collection[key], key, collection);
+      }
+    }
   };
 
   // Returns the index at which value can be found in the array, or -1 if value
@@ -66,16 +86,38 @@
 
   // Return all elements of an array that pass a truth test.
   _.filter = function(collection, test) {
+    var results = [];
+    var copy = collection.slice(0);
+    _.each(copy, function(value) {
+      if(test(value)) {
+        results.push(value);
+      }
+    });
+    return results;
   };
 
   // Return all elements of an array that don't pass a truth test.
-  _.reject = function(collection, test) {
+  _.reject = function(collection, test) { 
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
+    return _.filter(collection, function(value) {
+      return test(value) ? false : true;
+    });
   };
 
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
+    var uniqueElements = [];
+    console.log("before: " + JSON.stringify(array));
+    _.each(array, function (element){
+      if (_.indexOf(uniqueElements, element) === -1) {
+        uniqueElements.push(element);
+      }
+      return element;
+    });
+    console.log("after: " + JSON.stringify(array));
+    console.log(JSON.stringify(uniqueElements));
+    return uniqueElements;
   };
 
 
