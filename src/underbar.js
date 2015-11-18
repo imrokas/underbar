@@ -168,7 +168,16 @@
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
   _.reduce = function(collection, iterator, accumulator) {
-
+    var initialization = arguments.length === 2;
+    _.each(collection, function(element) {
+      if(initialization) {
+        accumulator = element;
+        initialization = false;
+      } else {
+        accumulator = iterator(accumulator, element);
+      }
+    });
+    return accumulator;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -187,12 +196,20 @@
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    iterator = iterator || _.identity;
+    return !!_.reduce(collection, function(trueSoFar, value) {
+      return trueSoFar && iterator(value);
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    iterator = iterator || _.identity;
+    return !!_.reduce(collection, function(trueSoFar, value) {
+      return trueSoFar || iterator(value);
+    }, false);
   };
 
 
@@ -215,11 +232,23 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    _.each(arguments, function(o) {
+      _.each(o, function(value, key) {
+        obj[key] = value;
+      });
+    });
+    return obj;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    _.each(arguments, function(o) {
+      _.each(o, function(value, key) {
+        obj[key] === undefined && (obj[key] = value);
+      });
+    });
+    return obj;
   };
 
 
