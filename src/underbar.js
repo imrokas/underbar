@@ -57,12 +57,12 @@
     if (Array.isArray(collection)) {
       //iterate over the array
       for (i = 0; i < collection.length; i++ ) {
-        collection[i] = iterator(collection[i], i, collection);
+        iterator(collection[i], i, collection);
       }
     } else if (typeof collection === 'object') {
       //iterate over the values of the object
       for (key in collection) {
-        collection[key] = iterator(collection[key], key, collection);
+        iterator(collection[key], key, collection);
       }
     }
   };
@@ -108,15 +108,12 @@
   // Produce a duplicate-free version of the array.
   _.uniq = function(array) {
     var uniqueElements = [];
-    console.log("before: " + JSON.stringify(array));
+    console.log(_.indexOf(uniqueElements, 3));
     _.each(array, function (element){
       if (_.indexOf(uniqueElements, element) === -1) {
         uniqueElements.push(element);
       }
-      return element;
     });
-    console.log("after: " + JSON.stringify(array));
-    console.log(JSON.stringify(uniqueElements));
     return uniqueElements;
   };
 
